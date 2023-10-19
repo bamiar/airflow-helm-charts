@@ -1,0 +1,10 @@
+FROM asia-northeast3-docker.pkg.dev/inspiring-rite-199401/container-registry/airflow-gke:base
+
+USER root
+# install r pkg
+#RUN R -e "install.packages(c('ggplot2', 'jsonlite', 'XML', 'xml2'))"
+
+USER airflow
+
+RUN pip install --upgrade pip
+RUN pip install flask-json

@@ -1,0 +1,37 @@
+steps:
+  - name: 'gcr.io/cloud-builders/docker'
+    entrypoint: 'docker'
+    args: [
+      'build',
+      '--no-cache',
+      '--network=cloudbuild',
+      '-t', '${_REGISTRY}/${_PROJECT_ID}/${_REPO}/${_APP}:develop',
+      '-t', '${_REGISTRY}/${_PROJECT_ID}/${_REPO}/${_APP}:$BUILD_ID',
+      '.',
+      '-f',
+      'Dockerfile_helm'
+    ]
+
+  - name: 'gcr.io/cloud-builders/docker'
+    args: [
+      'push', '${_REGISTRY}/${_PROJECT_ID}/${_REPO}/${_APP}:develop'
+    ]
+  - name: 'gcr.io/cloud-builders/docker'
+    args: [
+      'push', '${_REGISTRY}/${_PROJECT_ID}/${_REPO}/${_APP}:$BUILD_ID'
+    ]
+
+#options:
+#  pool:
+#    name: 'projects/inspiring-rite-199401/locations/asia-northeast3/workerPools/bamiar-vpc-data-cloudbuild-pool'
+
+images: [
+  '${_REGISTRY}/${_PROJECT_ID}/${_REPO}/${_APP}:develop',
+  '${_REGISTRY}/${_PROJECT_ID}/${_REPO}/${_APP}:$BUILD_ID'
+]
+
+timeout: 10800s
+substitutions:
+  _REGISTRY: 'asia-northeast3-docker.pkg.dev'
+  _PROJECT_ID: 'inspiring-rite-199401'
+  _REPO: 'container-registry/airflow-gke'
